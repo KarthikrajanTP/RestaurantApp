@@ -22,16 +22,15 @@ class Restaurant(models.Model):
     ]
 
     title = models.CharField(max_length=200)
-    rating = models.FloatField(default=0.0)
+    rating = models.DecimalField(max_digits=4, decimal_places=1, default=0.0)  # Changed to DecimalField
     cost_for_two = models.DecimalField(max_digits=10, decimal_places=2)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     location = models.CharField(max_length=200)
     address = models.TextField()
     timings = models.CharField(max_length=200)
     food_type = models.CharField(max_length=20, choices=FOOD_TYPE_CHOICES)
-    photos = models.ImageField(upload_to='restaurant_photos/')
-    cuisines = models.ManyToManyField(Cuisine)
     spotlight = models.BooleanField(default=False)
+    cuisines = models.ManyToManyField(Cuisine)
 
     def __str__(self):
         return self.title
@@ -40,11 +39,22 @@ class Restaurant(models.Model):
         reviews = self.reviews.all()
         if reviews.exists():
             average_rating = reviews.aggregate(Avg('rating'))['rating__avg']
-            self.rating = average_rating
+            if average_rating is not None:
+                self.rating = average_rating
+            else:
+                self.rating = 0.0
             self.save()
         else:
             self.rating = 0.0
             self.save()
+
+class Photo(models.Model):
+    restaurant = models.ForeignKey(Restaurant, related_name='photos', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='restaurant_photos/')
+    description = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f'Photo for {self.restaurant.title}'
 
 class Dish(models.Model):
     VEG = 'veg'
@@ -66,7 +76,7 @@ class Dish(models.Model):
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     restaurant = models.ForeignKey(Restaurant, related_name='reviews', on_delete=models.CASCADE)
-    rating = models.IntegerField()
+    rating = models.DecimalField(max_digits=3, decimal_places=1)
     comment = models.TextField()
     visited = models.BooleanField(default=False)
     bookmarked = models.BooleanField(default=False)
