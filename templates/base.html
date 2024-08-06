@@ -2,31 +2,31 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Restaurant App{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
-    {% block extra_head %}{% endblock %}
-</head>
-<body class="bg-gray-100 text-gray-900">
-    <header class="bg-blue-600 text-white p-4">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-3xl font-bold">Restaurant App</h1>
-            <nav>
-                <ul class="flex space-x-4">
-                    <li><a href="{% url 'restaurant-list' %}" class="hover:text-gray-300">Home</a></li>
-                 
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <main class="container mx-auto p-4">
-        {% block content %}
-        {% endblock %}
-    </main>
-<footer class="bg-blue-600 text-white p-4 text-center mt-auto">
-    <p>&copy; 2024 Restaurant App</p>
-</footer>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Restaurant App{% endblock %}</title>
+        <link rel="stylesheet" href="{% static 'css/output.css' %}">
+        {% block extra_head %}{% endblock %}
+    </head>
+    <body class="bg-gray-100 text-gray-900">
+        <header class="bg-blue-600 text-white p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-3xl font-bold">Restaurant App</h1>
+                <nav>
+                    <ul class="flex space-x-4">
+                        <li><a href="{% url 'restaurant-list' %}" class="hover:text-gray-300">Home</a></li>
+
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <main class="container mx-auto p-4">
+            {% block content %}
+            {% endblock %}
+        </main>
+        <footer class="bg-blue-600 text-white p-4 text-center mt-10">
+            <p>&copy; 2024 Restaurant App</p>
+        </footer>
+    </body>
 </html>

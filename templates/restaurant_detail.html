@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ restaurant.title }}{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold mb-4">{{ restaurant.title }}</h1>
+
+        <div class="flex flex-col lg:flex-row lg:space-x-8">
+            {% if restaurant.photos.first %}
+                <div class="flex-shrink-0">
+                    <img src="{{ restaurant.photos.first.image.url }}" alt="{{ restaurant.title }}" class="w-full h-64 object-cover rounded-lg">
+                </div>
+            {% endif %}
+            <div class="mt-4 lg:mt-0">
+                <p class="text-lg mb-2"><strong>Rating:</strong> {{ restaurant.rating }}</p>
+                <p class="text-lg mb-2"><strong>Cost for Two:</strong> Rs. {{ restaurant.cost_for_two }}</p>
+                <p class="text-lg mb-2"><strong>Location:</strong> {{ restaurant.location }}</p>
+                <p class="text-lg mb-2"><strong>Address:</strong> {{ restaurant.address }}</p>
+                <p class="text-lg mb-2"><strong>Timings:</strong> {{ restaurant.timings }}</p>
+                <p class="text-lg mb-2"><strong>Food Type:</strong> {{ restaurant.get_food_type_display }}</p>
+                <p class="text-lg mb-2"><strong>Cuisines:</strong> {{ restaurant.cuisines.all|join:", " }}</p>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <a href="{% url 'restaurant-list' %}" class="text-blue-500 hover:text-blue-700">Back to Restaurant List</a>
+        </div>
+    </div>
+{% endblock %}

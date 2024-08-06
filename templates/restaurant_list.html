@@ -7,71 +7,71 @@
 
     <div class="flex flex-wrap space-x-4 mb-6">
 
-    <form method="get" action="" class="flex flex-wrap space-x-4 mb-6">
-        <div class="mb-4">
-            <label for="cuisine" class="block text-lg">Cuisine:</label>
-            <select id="cuisine" name="cuisine" class="block w-full py-2 px-3 pr-10 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                <option value="">All Cuisines</option>
-                {% for cuisine in cuisines %}
-                    <option value="{{ cuisine.id }}" {% if request.GET.cuisine == cuisine.id|stringformat:"s" %}selected{% endif %}>{{ cuisine.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
+        <form method="get" action="" class="flex flex-wrap space-x-4 mb-6">
+            <div class="mb-4">
+                <label for="cuisine" class="block text-lg">Cuisine:</label>
+                <select id="cuisine" name="cuisine" class="block w-full py-2 px-3 pr-10 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="">All Cuisines</option>
+                    {% for cuisine in cuisines %}
+                        <option value="{{ cuisine.id }}" {% if request.GET.cuisine == cuisine.id|stringformat:"s" %}selected{% endif %}>{{ cuisine.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <div class="mb-4">
-            <label for="food_type" class="block text-lg">Food Type:</label>
-            <select id="food_type" name="food_type" class="block w-full py-2 px-3 pr-10 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                <option value="">All Types</option>
-                {% for value, label in food_types %}
-                    <option value="{{ value }}" {% if request.GET.food_type == value %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-            </select>
-        </div>
+            <div class="mb-4">
+                <label for="food_type" class="block text-lg">Food Type:</label>
+                <select id="food_type" name="food_type" class="block w-full py-2 px-3 pr-10 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="">All Types</option>
+                    {% for value, label in food_types %}
+                        <option value="{{ value }}" {% if request.GET.food_type == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <div class="mb-4">
-            <label for="rating" class="block text-lg">Rating:</label>
-            <select id="rating" name="rating" class="block w-full py-2 px-3 pr-10 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                <option value="">Any Rating</option>
-                {% for rating in ratings %}
-                    <option value="{{ rating }}" {% if request.GET.rating == rating|stringformat:"s" %}selected{% endif %}>{{ rating }}+</option>
-                {% endfor %}
-            </select>
-        </div>
+            <div class="mb-4">
+                <label for="rating" class="block text-lg">Rating:</label>
+                <select id="rating" name="rating" class="block w-full py-2 px-3 pr-10 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="">Any Rating</option>
+                    {% for rating in ratings %}
+                        <option value="{{ rating }}" {% if request.GET.rating == rating|stringformat:"s" %}selected{% endif %}>{{ rating }}+</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <div class="mb-4">
-            <label for="cost" class="block text-lg">Cost for Two:</label>
-            <select id="cost" name="cost" class="block w-full py-2 px-3 pr-10 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                <option value="">Any Cost</option>
-                {% for cost in cost_ranges %}
-                    <option value="{{ cost }}" {% if request.GET.cost == cost|stringformat:"s" %}selected{% endif %}>Up to ${{ cost }}</option>
-                {% endfor %}
-            </select>
-        </div>
+            <div class="mb-4">
+                <label for="cost" class="block text-lg">Cost for Two:</label>
+                <select id="cost" name="cost" class="block w-full py-2 px-3 pr-10 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="">Any Cost</option>
+                    {% for cost in cost_ranges %}
+                        <option value="{{ cost }}" {% if request.GET.cost == cost|stringformat:"s" %}selected{% endif %}>Up to Rs. {{ cost }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <div class="mb-4">
-            <label for="sort_by" class="block text-lg">Sort By:</label>
-            <select id="sort_by" name="sort_by" class="block w-full py-2 px-3 pr-10 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                <option value="">Sort By</option>
-                {% for value, label in sort_options %}
-                    <option value="{{ value }}" {% if request.GET.sort_by == value %}selected{% endif %}>{{ label }}</option>
-                {% endfor %}
-            </select>
-        </div>
+            <div class="mb-4">
+                <label for="sort_by" class="block text-lg">Sort By:</label>
+                <select id="sort_by" name="sort_by" class="block w-full py-2 px-3 pr-10 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                    <option value="">Sort By</option>
+                    {% for value, label in sort_options %}
+                        <option value="{{ value }}" {% if request.GET.sort_by == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <div class="flex items-end mb-4">
-            <button type="submit" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700">Filter</button>
-        </div>
-    </form>
+            <div class="flex items-end mb-4">
+                <button type="submit" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700">Filter</button>
+            </div>
+        </form>
 
-<form method="get" action="" class="mb-4 flex flex-wrap gap-4">
-    <div>
-        <label for="city" class="block text-sm font-medium text-gray-700">Search by City:</label>
-        <input type="text" id="city" name="city" value="{{ request.GET.city }}" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" placeholder="Enter city">
+        <form method="get" action="" class="mb-4 flex flex-wrap gap-4">
+            <div>
+                <label for="city" class="block text-sm font-medium text-gray-700">Search by City:</label>
+                <input type="text" id="city" name="city" value="{{ request.GET.city }}" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" placeholder="Enter city">
+            </div>
+            <button type="submit" class="self-end mb-6 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700">Search</button>
+        </form>
+
     </div>
-    <button type="submit" class="self-end mb-6 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700">Search</button>
-</form>
-
-</div>
 
 
 
@@ -87,7 +87,7 @@
                     <p class="text-gray-700">Cost for Two: {{ restaurant.cost_for_two }}</p>
                     <p class="text-gray-700">{{ restaurant.location }}</p>
                     <p class="text-gray-700">{{ restaurant.address }}</p>
-                    {% comment %} <a href="{% url 'restaurant-detail' restaurant.id %}" class="block mt-2 text-blue-500 hover:text-blue-700">View Details</a> {% endcomment %}
+                    <a href="{% url 'restaurant-detail' restaurant.id %}" class="block mt-2 text-blue-500 hover:text-blue-700">View Details</a>
                 </div>
             </div>
         {% empty %}
