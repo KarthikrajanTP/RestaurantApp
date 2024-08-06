@@ -5,7 +5,7 @@ from .models import Restaurant, Photo, Dish, Review
 class RestaurantAdmin(admin.ModelAdmin):
     list_display = ('title', 'rating', 'location')
     search_fields = ('title', 'location')
-    filter_horizontal = ('cuisines',)  # Ensure this matches the ManyToManyField in the model
+    filter_horizontal = ('cuisines',)
 
 @admin.register(Photo)
 class PhotoAdmin(admin.ModelAdmin):
