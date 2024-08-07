@@ -1,3 +1,5 @@
+from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView
 from .models import Restaurant, Cuisine, Review, Dish
@@ -96,3 +98,20 @@ class DishListView(ListView):
         restaurant = get_object_or_404(Restaurant, pk=self.kwargs.get('pk'))
         context['restaurant'] = restaurant
         return context
+    
+class SpotlightRestaurantsView(ListView):
+    model = Restaurant
+    template_name = 'spotlight_restaurants.html'
+    context_object_name = 'restaurants'
+
+    def get_queryset(self):
+        return Restaurant.objects.filter(spotlight=True)
+
+class VisitedRestaurantView(ListView):
+    model = Restaurant
+    context_object_name = 'restaurants'
+    template_name = 'spotlight_restaurants.html'
+
+    def get_queryset(self):
+        user = self.request.user
+        return Restaurant.objects.filter(reviews__user=user, reviews__visited=True).distinct()

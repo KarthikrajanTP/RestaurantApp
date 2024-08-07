@@ -3,7 +3,7 @@ from .models import Restaurant, Photo, Dish, Review
 
 @admin.register(Restaurant)
 class RestaurantAdmin(admin.ModelAdmin):
-    list_display = ('title', 'rating', 'location')
+    list_display = ('title', 'rating', 'location', 'spotlight')
     search_fields = ('title', 'location')
     filter_horizontal = ('cuisines',)
 
@@ -21,3 +21,4 @@ class DishAdmin(admin.ModelAdmin):
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ('user', 'restaurant', 'rating', 'visited', 'bookmarked')
     search_fields = ('user__username', 'restaurant__title')
+
