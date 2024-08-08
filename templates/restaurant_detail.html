@@ -49,15 +49,17 @@
             <!-- Restaurant Details on the Right -->
             <div class="w-1/3 px-4">
                 <h2 class="text-3xl font-bold mb-2">{{ restaurant.title }}</h2>
-                <p class="mb-2"><strong>Address:</strong> {{ restaurant.address }}</p>
-                <p class="mb-2"><strong>Location:</strong> {{ restaurant.location }}</p>
-                <p class="mb-2"><strong>Timings:</strong> {{ restaurant.timings }}</p>
-                <p class="mb-2"><strong>Food Type:</strong> {{ restaurant.get_food_type_display }}</p>
-                <p class="mb-2"><strong>Cost for Two:</strong> {{ restaurant.cost_for_two }}</p>
-                <p class="mb-2"><strong>Rating:</strong> {{ restaurant.rating }}</p>
-                <p class="mb-4"><strong>Cuisines:</strong> {{ restaurant.cuisines.all|join:", " }}</p>
-                <div class="mt-4">
-                    <a href="{% url 'dish-list' restaurant.pk %}" class="inline-block px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600">View Dishes</a>
+                <p class="text-lg mb-2"><strong>Address:</strong> {{ restaurant.address }}</p>
+                <p class="text-lg mb-2"><strong>Location:</strong> {{ restaurant.location }}</p>
+                <p class="text-lg mb-2"><strong>Timings:</strong> {{ restaurant.timings }}</p>
+                <p class="text-lg mb-2"><strong>Food Type:</strong> {{ restaurant.get_food_type_display }}</p>
+                <p class="text-lg mb-2"><strong>Cost for Two:</strong> {{ restaurant.cost_for_two }}</p>
+                <p class="text-lg mb-2"><strong>Rating:</strong> {{ restaurant.rating }}</p>
+                <p class="text-lg mb-4"><strong>Cuisines:</strong> {{ restaurant.cuisines.all|join:", " }}</p>
+                <div class="mt-4 flex items-center space-x-8">
+                    <div>
+                        <a href="{% url 'dish-list' restaurant.pk %}" class="inline-block px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 w-36 text-center">View Dishes</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,6 +80,22 @@
                     {{ review_form.comment|add_class:"block w-full mt-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" }}
                     {{ review_form.comment.errors }}
                 </div>
+                
+                <!-- Bookmark and Visited Toggle -->
+                <div class="mt-4 flex space-between items-center space-x-8">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="bookmarked" value="1" {% if user_review and user_review.bookmarked %} checked {% endif %} class="sr-only peer">
+                        <div class="relative w-11 h-6 bg-red-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-red-300 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                        <span class="ms-3 text-sm font-medium text-gray-900">Bookmark</span>
+                    </label>
+
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="visited" value="1" {% if user_review and user_review.visited %} checked {% endif %} class="sr-only peer">
+                        <div class="relative w-11 h-6 bg-green-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-green-300 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                        <span class="ms-3 text-sm font-medium text-gray-900">Visited</span>
+                    </label>
+                </div>
+
                 <button type="submit" class="mt-4 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600">{{ user_review|yesno:"Edit Review,Add Review" }}</button>
             </form>
         </div>

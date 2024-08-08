@@ -81,8 +81,21 @@ class RestaurantDetailView(LoginRequiredMixin, View):
             review.user = request.user
             review.save()
 
+            # Update bookmark and visited status
+            if 'bookmarked' in request.POST:
+                review.bookmarked = True
+            else:
+                review.bookmarked = False
+            
+            if 'visited' in request.POST:
+                review.visited = True
+            else:
+                review.visited = False
+
+            review.save()
+
         return redirect('restaurant-detail', pk=pk)
-    
+
 class DishListView(ListView):
     model = Dish
     template_name = 'dish_list.html'
@@ -101,8 +114,9 @@ class DishListView(ListView):
     
 class SpotlightRestaurantsView(ListView):
     model = Restaurant
-    template_name = 'spotlight_restaurants.html'
+    template_name = 'restaurant_common_list.html'
     context_object_name = 'restaurants'
+    page_title = 'Spotlight Restaurants'
 
     def get_queryset(self):
         return Restaurant.objects.filter(spotlight=True)
@@ -110,8 +124,19 @@ class SpotlightRestaurantsView(ListView):
 class VisitedRestaurantView(ListView):
     model = Restaurant
     context_object_name = 'restaurants'
-    template_name = 'spotlight_restaurants.html'
+    template_name = 'restaurant_common_list.html'
+    page_title = 'Visited Restaurants'
 
     def get_queryset(self):
         user = self.request.user
         return Restaurant.objects.filter(reviews__user=user, reviews__visited=True).distinct()
+    
+class BookmarkedRestaurantView(ListView):
+    model = Restaurant
+    context_object_name = 'restaurants'
+    template_name = 'restaurant_common_list.html'
+    page_title = 'Bookmarked Restaurants'
+
+    def get_queryset(self):
+        user = self.request.user
+        return Restaurant.objects.filter(reviews__user=user, reviews__bookmarked=True).distinct()
