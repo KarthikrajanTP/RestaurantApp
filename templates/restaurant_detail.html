@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% load static %}
-{% load form_tags %}
+
+{% load widget_tweaks %}
 
 {% block content %}
     <div class="container mx-auto mt-4 px-4">
@@ -71,16 +72,14 @@
                 {% csrf_token %}
                 {{ review_form.non_field_errors }}
                 <div>
-                    {{ review_form.rating.label_tag }}
-                    {{ review_form.rating|add_class:"block w-full mt-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" }}
+                    {% render_field review_form.rating class+="block w-full mt-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %}
                     {{ review_form.rating.errors }}
                 </div>
                 <div>
-                    {{ review_form.comment.label_tag }}
-                    {{ review_form.comment|add_class:"block w-full mt-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" }}
-                    {{ review_form.comment.errors }}
+                    {% render_field review_form.comment class+="block w-full mt-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %}
+                    <span class="text-red-600 text-md font-semibold">{{ review_form.comment.errors }}</span>
                 </div>
-                
+
                 <!-- Bookmark and Visited Toggle -->
                 <div class="mt-4 flex space-between items-center space-x-8">
                     <label class="inline-flex items-center cursor-pointer">

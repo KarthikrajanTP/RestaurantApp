@@ -18,19 +18,7 @@ class RestaurantListView(ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         self.filterset = RestaurantFilter(self.request.GET, queryset=queryset)
-        queryset = self.filterset.qs
-
-        sort_option = self.request.GET.get('sort_by')
-        if sort_option == 'cost_asc':
-            queryset = queryset.order_by('cost_for_two')
-        elif sort_option == 'cost_desc':
-            queryset = queryset.order_by('-cost_for_two')
-        elif sort_option == 'rating_asc':
-            queryset = queryset.order_by('rating')
-        elif sort_option == 'rating_desc':
-            queryset = queryset.order_by('-rating')
-
-        return queryset
+        return self.filterset.qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -39,12 +27,6 @@ class RestaurantListView(ListView):
         context['food_types'] = Restaurant.FOOD_TYPE_CHOICES
         context['ratings'] = [1, 2, 3, 4, 5]
         context['cost_ranges'] = [200, 500, 1000, 2000, 3000]
-        context['sort_options'] = [
-            ('cost_asc', 'Cost Low to High'),
-            ('cost_desc', 'Cost High to Low'),
-            ('rating_asc', 'Rating Low to High'),
-            ('rating_desc', 'Rating High to Low')
-        ]
         return context
 
 class RestaurantDetailView(LoginRequiredMixin, View):
@@ -57,7 +39,7 @@ class RestaurantDetailView(LoginRequiredMixin, View):
         page_obj = paginator.get_page(page_number)
 
         user_review = reviews.filter(user=request.user).first()
-        review_form = ReviewForm(instance=user_review)
+        review_form = self._is_update_review_form(user_review)
 
         return render(request, 'restaurant_detail.html', {
             'restaurant': restaurant,
@@ -69,11 +51,7 @@ class RestaurantDetailView(LoginRequiredMixin, View):
     def post(self, request, pk, *args, **kwargs):
         restaurant = get_object_or_404(Restaurant, pk=pk)
         user_review = restaurant.reviews.filter(user=request.user).first()
-
-        if user_review:
-            form = ReviewForm(request.POST, instance=user_review)
-        else:
-            form = ReviewForm(request.POST)
+        form = self._is_update_review_form(user_review, request.POST)
 
         if form.is_valid():
             review = form.save(commit=False)
@@ -81,20 +59,31 @@ class RestaurantDetailView(LoginRequiredMixin, View):
             review.user = request.user
             review.save()
 
-            # Update bookmark and visited status
-            if 'bookmarked' in request.POST:
-                review.bookmarked = True
-            else:
-                review.bookmarked = False
-            
-            if 'visited' in request.POST:
-                review.visited = True
-            else:
-                review.visited = False
-
+            self._update_review_status(review, request.POST)
             review.save()
+            return redirect('restaurant-detail', pk=pk)
 
-        return redirect('restaurant-detail', pk=pk)
+        reviews = restaurant.reviews.all()
+        paginator = Paginator(reviews, 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        return render(request, 'restaurant_detail.html', {
+            'restaurant': restaurant,
+            'page_obj': page_obj,
+            'review_form': form,
+            'user_review': user_review
+        })
+
+    def _is_update_review_form(self, user_review=None, data=None):
+        if user_review:
+            return ReviewForm(data, instance=user_review)
+        else:
+            return ReviewForm(data)
+
+    def _update_review_status(self, review: Review, post_data: dict):
+        review.bookmarked = 'bookmarked' in post_data
+        review.visited = 'visited' in post_data
 
 class DishListView(ListView):
     model = Dish
@@ -103,8 +92,7 @@ class DishListView(ListView):
     paginate_by = 9
 
     def get_queryset(self):
-        restaurant_id = self.kwargs.get('pk')
-        return Dish.objects.filter(restaurant_id=restaurant_id)
+        return Dish.objects.filter(restaurant_id=self.kwargs.get('pk'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -129,7 +117,7 @@ class VisitedRestaurantView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return Restaurant.objects.filter(reviews__user=user, reviews__visited=True).distinct()
+        return Restaurant.objects.filter(reviews__user=self.request.user, reviews__visited=True).distinct()
     
 class BookmarkedRestaurantView(ListView):
     model = Restaurant
