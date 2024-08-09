@@ -1,8 +1,6 @@
-from django import forms
 from django.urls import reverse_lazy
-from django.contrib.auth.models import User
+from .forms import CustomUserCreationForm
 from django.views.generic import CreateView
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.contrib.auth.views import PasswordResetView as BasePasswordResetView
@@ -12,13 +10,6 @@ from django.contrib.auth.views import PasswordResetCompleteView as BasePasswordR
 
 class LoginView(BaseLoginView):
     template_name = 'accounts/login.html'
-
-class CustomUserCreationForm(UserCreationForm):
-    email = forms.EmailField(required=True, help_text='Required. Enter a valid email address.')
-
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password1', 'password2')
 
 class SignupView(CreateView):
     template_name = 'accounts/signup.html'
