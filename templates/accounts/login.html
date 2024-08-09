@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% load widget_tweaks %}
+
+{% load static %}
+
+{% block content %}
+    <div class="bg-gray-100 flex items-center justify-center min-h-screen">
+        <div class="w-full max-w-4xl bg-white p-8 rounded-lg shadow-md flex mb-24">
+
+            <div class="w-1/2 flex items-center justify-center mr-10">
+                <img src="{% static 'login2.png' %}" alt="Login" class="w-full" />
+            </div>
+
+            <div class="w-1/2">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">Login</h2>
+                <form method="post" class="space-y-4">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}" class="block text-gray-700 font-medium">{{ form.username.label }}</label>
+                        {% render_field form.username class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %}
+                        {{ form.username.errors }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.password.id_for_label }}" class="block text-gray-700 font-medium">{{ form.password.label }}</label>
+                        {% render_field form.password class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %}
+                        {{ form.password.errors }}
+                    </div>
+
+                    <button type="submit" class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                        Login
+                    </button>
+                </form>
+                <div class="mt-4 text-center">
+                    <p class="text-gray-600">
+                        <a href="{% url 'signup' %}" class="text-blue-600 hover:text-blue-800">Don't have an account? <span class="font-semibold">Sign up</span></a>
+                    </p>
+                    <p class="mt-2 text-gray-600">
+                        <a href="{% url 'password_reset' %}" class="text-blue-600 hover:text-blue-800">Forgot your password?</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
