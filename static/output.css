@@ -1709,6 +1709,15 @@ select {
   .md\:p-0 {
     padding: 0px;
   }
+
+  .md\:hover\:bg-transparent:hover {
+    background-color: transparent;
+  }
+
+  .md\:hover\:text-blue-700:hover {
+    --tw-text-opacity: 1;
+    color: rgb(29 78 216 / var(--tw-text-opacity));
+  }
 }
 
 .rtl\:space-x-reverse:where([dir="rtl"], [dir="rtl"] *) > :not([hidden]) ~ :not([hidden]) {
@@ -1771,6 +1780,11 @@ select {
 @media (min-width: 768px) {
   @media (prefers-color-scheme: dark) {
     .md\:dark\:text-blue-500 {
+      --tw-text-opacity: 1;
+      color: rgb(59 130 246 / var(--tw-text-opacity));
+    }
+
+    .md\:dark\:hover\:text-blue-500:hover {
       --tw-text-opacity: 1;
       color: rgb(59 130 246 / var(--tw-text-opacity));
     }
