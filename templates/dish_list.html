@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+    <div class="container mx-auto mt-4 px-4">
+        <h2 class="text-2xl font-bold mb-4">Dishes for {{ restaurant.title }}</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {% for dish in dishes %}
+                <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                    {% if dish.image %}
+                        <img src="{{ dish.image.url }}" alt="{{ dish.name }}" class="w-full h-56 object-cover">
+                    {% else %}
+                        <img src="{% static 'default-food.png' %}" alt="{{ dish.name }}" class="w-full h-56 object-cover">
+                    {% endif %}
+                    <div class="p-4">
+                        <h3 class="text-xl font-bold mb-2">{{ dish.name }}</h3>
+                        <p class="text-gray-700"><strong>Price:</strong> {{ dish.price }}</p>
+                        <p class="text-gray-700"><strong>Type:</strong> {{ dish.get_dish_type_display }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No dishes available for this restaurant.</p>
+            {% endfor %}
+        </div>
+        <div class="mt-4">
+            <a href="{% url 'restaurant-detail' restaurant.pk %}" class="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">Back to Restaurant Details</a>
+        </div>
+    </div>
+{% endblock %}

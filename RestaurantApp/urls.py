@@ -16,13 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from restaurants.views import RestaurantListView, RestaurantDetailView
+from restaurants.views import RestaurantListView, RestaurantDetailView, DishListView, SpotlightRestaurantsView, VisitedRestaurantView, BookmarkedRestaurantView
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('', RestaurantListView.as_view(), name='restaurant-list'),
+    path('spotlight/', SpotlightRestaurantsView.as_view(), name = 'spotlight_restaurants'),
+    path('visited/',VisitedRestaurantView.as_view(), name='visited_restaurants'),
+    path('bookmarked/',BookmarkedRestaurantView.as_view(), name='bookmarked_restaurants'),
     path('restaurant/<int:pk>/', RestaurantDetailView.as_view(), name='restaurant-detail'),
+    path('restaurant/<int:pk>/dishes/', DishListView.as_view(), name='dish-list'),
     path('admin/', admin.site.urls),
 ]
 
