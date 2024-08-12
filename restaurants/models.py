@@ -22,7 +22,7 @@ class Restaurant(models.Model):
     ]
 
     title = models.CharField(max_length=200)
-    rating = models.DecimalField(max_digits=4, decimal_places=1, default=0.0)  # Changed to DecimalField
+    rating = models.DecimalField(max_digits=4, decimal_places=1, default=0.0)
     cost_for_two = models.DecimalField(max_digits=10, decimal_places=2)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     location = models.CharField(max_length=200)
