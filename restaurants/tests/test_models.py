@@ -17,7 +17,7 @@ class RestaurantModelTests(TestCase):
         self.cuisine = Cuisine.objects.create(name='Italian')
         self.restaurant = Restaurant.objects.create(
             title='Test Restaurant',
-            rating=0.0,  # Initial rating should be 0.0
+            rating=0.0,
             cost_for_two=50.00,
             owner=self.user,
             location='Test Location',
@@ -51,7 +51,7 @@ class PhotoModelTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.restaurant = Restaurant.objects.create(
             title='Test Restaurant',
-            rating=0.0,  # Initial rating should be 0.0
+            rating=0.0,
             cost_for_two=50.00,
             owner=self.user,
             location='Test Location',
@@ -75,7 +75,7 @@ class DishModelTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.restaurant = Restaurant.objects.create(
             title='Test Restaurant',
-            rating=0.0,  # Initial rating should be 0.0
+            rating=0.0,
             cost_for_two=50.00,
             owner=self.user,
             location='Test Location',
@@ -100,7 +100,7 @@ class ReviewModelTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.restaurant = Restaurant.objects.create(
             title='Test Restaurant',
-            rating=0.0,  # Initial rating should be 0.0
+            rating=0.0,
             cost_for_two=50.00,
             owner=self.user,
             location='Test Location',
@@ -133,7 +133,7 @@ class BookmarkModelTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.restaurant = Restaurant.objects.create(
             title='Test Restaurant',
-            rating=0.0,  # Initial rating should be 0.0
+            rating=0.0,
             cost_for_two=50.00,
             owner=self.user,
             location='Test Location',
@@ -157,7 +157,7 @@ class VisitModelTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.restaurant = Restaurant.objects.create(
             title='Test Restaurant',
-            rating=0.0,  # Initial rating should be 0.0
+            rating=0.0,
             cost_for_two=50.00,
             owner=self.user,
             location='Test Location',
