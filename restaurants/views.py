@@ -2,12 +2,13 @@ from typing import Any
 from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView
-from .models import Restaurant, Cuisine, Review, Dish
+from .models import Restaurant, Cuisine, Review, Dish, Bookmark, Visit
 from .filters import RestaurantFilter
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from .forms import ReviewForm
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 
 class RestaurantListView(ListView):
     model = Restaurant
@@ -41,11 +42,16 @@ class RestaurantDetailView(LoginRequiredMixin, View):
         user_review = reviews.filter(user=request.user).first()
         review_form = self._is_update_review_form(user_review)
 
+        bookmarked = Bookmark.objects.filter(user=request.user, restaurant=restaurant).exists()
+        visited = Visit.objects.filter(user=request.user, restaurant=restaurant).exists()
+
         return render(request, 'restaurant_detail.html', {
             'restaurant': restaurant,
             'page_obj': page_obj,
             'review_form': review_form,
-            'user_review': user_review
+            'user_review': user_review,
+            'bookmarked': bookmarked,
+            'visited': visited,
         })
 
     def post(self, request, pk, *args, **kwargs):
@@ -59,8 +65,6 @@ class RestaurantDetailView(LoginRequiredMixin, View):
             review.user = request.user
             review.save()
 
-            self._update_review_status(review, request.POST)
-            review.save()
             return redirect('restaurant-detail', pk=pk)
 
         reviews = restaurant.reviews.all()
@@ -68,11 +72,16 @@ class RestaurantDetailView(LoginRequiredMixin, View):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
 
+        bookmarked = Bookmark.objects.filter(user=request.user, restaurant=restaurant).exists()
+        visited = Visit.objects.filter(user=request.user, restaurant=restaurant).exists()
+
         return render(request, 'restaurant_detail.html', {
             'restaurant': restaurant,
             'page_obj': page_obj,
             'review_form': form,
-            'user_review': user_review
+            'user_review': user_review,
+            'bookmarked': bookmarked,
+            'visited': visited,
         })
 
     def _is_update_review_form(self, user_review=None, data=None):
@@ -80,10 +89,6 @@ class RestaurantDetailView(LoginRequiredMixin, View):
             return ReviewForm(data, instance=user_review)
         else:
             return ReviewForm(data)
-
-    def _update_review_status(self, review: Review, post_data: dict):
-        review.bookmarked = 'bookmarked' in post_data
-        review.visited = 'visited' in post_data
 
 class DishListView(ListView):
     model = Dish
@@ -117,7 +122,7 @@ class VisitedRestaurantView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return Restaurant.objects.filter(reviews__user=self.request.user, reviews__visited=True).distinct()
+        return Restaurant.objects.filter(visits__user=user).distinct()
     
 class BookmarkedRestaurantView(ListView):
     model = Restaurant
@@ -127,4 +132,27 @@ class BookmarkedRestaurantView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return Restaurant.objects.filter(reviews__user=user, reviews__bookmarked=True).distinct()
+        return Restaurant.objects.filter(bookmarks__user=user).distinct()
+
+
+class ToggleVisitView(View):
+    def post(self, request, *args, **kwargs):
+        restaurant = get_object_or_404(Restaurant, pk=self.kwargs['pk'])
+        if Visit.objects.filter(user=request.user, restaurant=restaurant).exists():
+            Visit.objects.filter(user=request.user, restaurant=restaurant).delete()
+            visited = False
+        else:
+            Visit.objects.create(user=request.user, restaurant=restaurant)
+            visited = True
+        return JsonResponse({'success': True, 'visited': visited})
+
+class ToggleBookmarkView(View):
+    def post(self, request, *args, **kwargs):
+        restaurant = get_object_or_404(Restaurant, pk=self.kwargs['pk'])
+        if Bookmark.objects.filter(user=request.user, restaurant=restaurant).exists():
+            Bookmark.objects.filter(user=request.user, restaurant=restaurant).delete()
+            bookmarked = False
+        else:
+            Bookmark.objects.create(user=request.user, restaurant=restaurant)
+            bookmarked = True
+        return JsonResponse({'success': True, 'bookmarked': bookmarked})

@@ -57,11 +57,45 @@
                 <p class="text-lg mb-2"><strong>Cost for Two:</strong> {{ restaurant.cost_for_two }}</p>
                 <p class="text-lg mb-2"><strong>Rating:</strong> {{ restaurant.rating }}</p>
                 <p class="text-lg mb-4"><strong>Cuisines:</strong> {{ restaurant.cuisines.all|join:", " }}</p>
-                <div class="mt-4 flex items-center space-x-8">
+
+                <div class="flex space-x-8 items-center">
+
                     <div>
-                        <a href="{% url 'dish-list' restaurant.pk %}" class="inline-block px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 w-36 text-center">View Dishes</a>
+                        <div>
+                            <a href="{% url 'dish-list' restaurant.pk %}" class="inline-block px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 w-36 text-center">View Dishes</a>
+                        </div>
                     </div>
+
+                    <div>
+                        <!-- Visit Button -->
+                        <button id="visit-button-{{ restaurant.id }}" onclick="toggleVisit({{ restaurant.id }})"
+                                class="px-4 py-2 w-36 font-semibold rounded-md transition-colors duration-300 ease-in-out
+                                       {{ visited|yesno:'bg-green-800, bg-green-300' }} {{ visited|yesno:'text-white, text-gray-800' }}
+                                       hover:opacity-80">
+                            {% if visited %}
+                                Visited
+                            {% else %}
+                                Mark as Visited
+                            {% endif %}
+                        </button>
+                    </div>
+
+                    <div>
+                        <!-- Bookmark Button -->
+                        <button id="bookmark-button-{{ restaurant.id }}" onclick="toggleBookmark({{ restaurant.id }})"
+                                class="px-4 py-2 w-36 font-semibold rounded-md transition-colors duration-300 ease-in-out
+                                       {{ bookmarked|yesno:'bg-blue-800, bg-blue-300' }} {{ bookmarked|yesno:'text-white, text-gray-800' }}
+                                       hover:opacity-80">
+                            {% if bookmarked %}
+                                Bookmarked
+                            {% else %}
+                                Bookmark
+                            {% endif %}
+                        </button>
+                    </div>
+
                 </div>
+
             </div>
         </div>
 
@@ -78,21 +112,6 @@
                 <div>
                     {% render_field review_form.comment class+="block w-full mt-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %}
                     <span class="text-red-600 text-md font-semibold">{{ review_form.comment.errors }}</span>
-                </div>
-
-                <!-- Bookmark and Visited Toggle -->
-                <div class="mt-4 flex space-between items-center space-x-8">
-                    <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" name="bookmarked" value="1" {% if user_review and user_review.bookmarked %} checked {% endif %} class="sr-only peer">
-                        <div class="relative w-11 h-6 bg-red-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-red-300 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
-                        <span class="ms-3 text-sm font-medium text-gray-900">Bookmark</span>
-                    </label>
-
-                    <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" name="visited" value="1" {% if user_review and user_review.visited %} checked {% endif %} class="sr-only peer">
-                        <div class="relative w-11 h-6 bg-green-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-green-300 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
-                        <span class="ms-3 text-sm font-medium text-gray-900">Visited</span>
-                    </label>
                 </div>
 
                 <button type="submit" class="mt-4 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600">{{ user_review|yesno:"Edit Review,Add Review" }}</button>

@@ -79,8 +79,22 @@ class Review(models.Model):
     restaurant = models.ForeignKey(Restaurant, related_name='reviews', on_delete=models.CASCADE)
     rating = models.DecimalField(max_digits=3, decimal_places=1)
     comment = models.TextField()
-    visited = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.restaurant.title}'
+    
+class Bookmark(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, related_name='bookmarks', on_delete=models.CASCADE)
     bookmarked = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.restaurant.title}'
+    
+class Visit(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    restaurant = models.ForeignKey(Restaurant, related_name='visits', on_delete=models.CASCADE)
+    visited = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.user.username} - {self.restaurant.title}'

@@ -77,6 +77,75 @@
                 var menu = document.getElementById('dropdownNavbar');
                 menu.classList.toggle('hidden');
             });
+
+            //Ajax
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            // Function to handle toggle visit
+            function toggleVisit(restaurantId) {
+                fetch(`/restaurants/${restaurantId}/toggle-visit/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 'restaurant_id': restaurantId })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const visitButton = document.getElementById(`visit-button-${restaurantId}`);
+                        if (data.visited) {
+                            visitButton.textContent = 'Visited';
+                            visitButton.classList.remove('bg-green-300', 'text-gray-800');
+                            visitButton.classList.add('bg-green-800', 'text-white');
+                        } else {
+                            visitButton.textContent = 'Mark as Visited';
+                            visitButton.classList.remove('bg-green-800', 'text-white');
+                            visitButton.classList.add('bg-green-300', 'text-gray-800');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            // Function to handle toggle bookmark
+            function toggleBookmark(restaurantId) {
+                fetch(`/restaurants/${restaurantId}/toggle-bookmark/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 'restaurant_id': restaurantId })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        const bookmarkButton = document.getElementById(`bookmark-button-${restaurantId}`);
+                        if (data.bookmarked) {
+                            bookmarkButton.textContent = 'Bookmarked';
+                            bookmarkButton.classList.remove('bg-blue-300', 'text-gray-800');
+                            bookmarkButton.classList.add('bg-blue-800', 'text-white');
+                        } else {
+                            bookmarkButton.textContent = 'Bookmark';
+                            bookmarkButton.classList.remove('bg-blue-800', 'text-white');
+                            bookmarkButton.classList.add('bg-blue-300', 'text-gray-800');
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
         </script>
     </body>
 </html>

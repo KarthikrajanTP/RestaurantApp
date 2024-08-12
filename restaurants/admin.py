@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Restaurant, Photo, Dish, Review, Cuisine
+from .models import Restaurant, Photo, Dish, Review, Cuisine, Visit, Bookmark
 
 @admin.register(Restaurant)
 class RestaurantAdmin(admin.ModelAdmin):
@@ -19,7 +19,7 @@ class DishAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('user', 'restaurant', 'rating', 'visited', 'bookmarked')
+    list_display = ('user', 'restaurant', 'rating')
     search_fields = ('user__username', 'restaurant__title')
 
 @admin.register(Cuisine)
@@ -27,3 +27,13 @@ class CuisineAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
 
+@admin.register(Visit)
+class VisitAdmin(admin.ModelAdmin):
+    list_display = ('user', 'restaurant')
+    search_fields = ('user__username', 'restaurant__title')
+
+
+@admin.register(Bookmark)
+class BookmarkAdmin(admin.ModelAdmin):
+    list_display = ('user', 'restaurant')
+    search_fields = ('user__username', 'restaurant__title')
