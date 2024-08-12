@@ -1,8 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
-from restaurants.models import Restaurant, Cuisine, Review, Dish
-from restaurants.forms import ReviewForm
+from restaurants.models import Restaurant, Cuisine, Review, Dish, Bookmark, Visit
 
 class RestaurantListViewTests(TestCase):
     def setUp(self):
@@ -50,8 +49,6 @@ class RestaurantDetailViewTests(TestCase):
             restaurant=self.restaurant,
             rating=4.0,
             comment='Great food!',
-            visited=True,
-            bookmarked=False
         )
         self.url = reverse('restaurant-detail', kwargs={'pk': self.restaurant.pk})
 
@@ -62,14 +59,12 @@ class RestaurantDetailViewTests(TestCase):
         self.assertContains(response, 'Great food!')
 
     def test_post_restaurant_detail_view(self):
-        form_data = {'rating': 5.0, 'comment': 'Excellent!', 'visited': 'on', 'bookmarked': 'on'}
+        form_data = {'rating': 5.0, 'comment': 'Excellent!'}
         response = self.client.post(self.url, data=form_data)
         self.assertRedirects(response, self.url)
         updated_review = Review.objects.get(user=self.user, restaurant=self.restaurant)
         self.assertEqual(updated_review.rating, 5.0)
         self.assertEqual(updated_review.comment, 'Excellent!')
-        self.assertTrue(updated_review.visited)
-        self.assertTrue(updated_review.bookmarked)
 
 class DishListViewTests(TestCase):
     def setUp(self):
@@ -144,8 +139,6 @@ class VisitedRestaurantViewTests(TestCase):
             restaurant=self.restaurant,
             rating=4.0,
             comment='Great food!',
-            visited=True,
-            bookmarked=False
         )
         self.url = reverse('visited_restaurants')
 
@@ -175,8 +168,6 @@ class BookmarkedRestaurantViewTests(TestCase):
             restaurant=self.restaurant,
             rating=4.0,
             comment='Great food!',
-            visited=False,
-            bookmarked=True
         )
         self.url = reverse('bookmarked_restaurants')
 
@@ -185,3 +176,61 @@ class BookmarkedRestaurantViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'restaurant_common_list.html')
         self.assertContains(response, 'Bookmarked Restaurant')
+
+class ToggleVisitViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.client.login(username='testuser', password='testpassword')
+        self.restaurant = Restaurant.objects.create(
+            title='Test Restaurant',
+            rating=4.5,
+            cost_for_two=50.00,
+            owner=self.user,
+            location='Test Location',
+            address='Test Address',
+            timings='10 AM - 10 PM',
+            food_type=Restaurant.VEG
+        )
+        self.url = reverse('toggle-visit', kwargs={'pk': self.restaurant.pk})
+
+    def test_toggle_visit(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': True, 'visited': True})
+        self.assertTrue(Visit.objects.filter(user=self.user, restaurant=self.restaurant).exists())
+
+        # Toggle visit off
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': True, 'visited': False})
+        self.assertFalse(Visit.objects.filter(user=self.user, restaurant=self.restaurant).exists())
+
+class ToggleBookmarkViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.client.login(username='testuser', password='testpassword')
+        self.restaurant = Restaurant.objects.create(
+            title='Test Restaurant',
+            rating=4.5,
+            cost_for_two=50.00,
+            owner=self.user,
+            location='Test Location',
+            address='Test Address',
+            timings='10 AM - 10 PM',
+            food_type=Restaurant.VEG
+        )
+        self.url = reverse('toggle-bookmark', kwargs={'pk': self.restaurant.pk})
+
+    def test_toggle_bookmark(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': True, 'bookmarked': True})
+        self.assertTrue(Bookmark.objects.filter(user=self.user, restaurant=self.restaurant).exists())
+
+        # Toggle bookmark off
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertJSONEqual(response.content, {'success': True, 'bookmarked': False})
+        self.assertFalse(Bookmark.objects.filter(user=self.user, restaurant=self.restaurant).exists())

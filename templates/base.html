@@ -14,10 +14,10 @@
         <nav class="bg-blue-600 border-gray-200 text-white">
             <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <a href="{% url 'restaurant-list' %}" class="flex items-center space-x-3 rtl:space-x-reverse">
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Restaurant App</span>
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap">Restaurant App</span>
                 </a>
-                <button data-collapse-toggle="navbar-multi-level" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-multi-level" aria-expanded="false">
-                    <span class="sr-only">Open main menu</span>
+                <button data-collapse-toggle="navbar-multi-level" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 :text-gray-400 " aria-controls="navbar-multi-level" aria-expanded="false">
+                    <span class="sr-only">Open main menu</span>dark
                     <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
                     </svg>
@@ -25,7 +25,7 @@
                 <div class="hidden bg-blue-600 w-full md:block md:w-auto" id="navbar-multi-level">
                     <ul class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 bg-blue-600">
                         <li>
-                            <a href="{% url 'restaurant-list' %}" class="block py-2 px-3 text-white rounded md:bg-transparent md:p-0 md:dark:text-blue-500 " aria-current="page">Home</a>
+                            <a href="{% url 'restaurant-list' %}" class="block py-2 px-3 text-white rounded md:bg-transparent md:p-0 " aria-current="page">Home</a>
                         </li>
                         {% if user.is_authenticated %}
                             <li class="relative">
@@ -33,16 +33,16 @@
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
                                 </svg></button>
 
-                                <div id="dropdownNavbar" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
-                                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownNavbarLink">
+                                <div id="dropdownNavbar" class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 ">
+                                    <ul class="py-2 text-sm text-gray-700" aria-labelledby="dropdownNavbarLink">
                                         <li>
-                                            <a href="{% url 'spotlight_restaurants' %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">View Spotlight Hotels</a>
+                                            <a href="{% url 'spotlight_restaurants' %}" class="block px-4 py-2 hover:bg-gray-100 ">View Spotlight Hotels</a>
                                         </li>
                                         <li>
-                                            <a href="{% url 'bookmarked_restaurants' %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Bookmarked Hotels</a>
+                                            <a href="{% url 'bookmarked_restaurants' %}" class="block px-4 py-2 hover:bg-gray-100 ">Bookmarked Hotels</a>
                                         </li>
                                         <li>
-                                            <a href="{% url 'visited_restaurants' %}" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Visited Hotels</a>
+                                            <a href="{% url 'visited_restaurants' %}" class="block px-4 py-2 hover:bg-gray-100 ">Visited Hotels</a>
                                         </li>
                                     </ul>
                                     <div class="py-1">
@@ -57,7 +57,7 @@
                             </li>
                         {% else %}
                             <li>
-                                <a href="{% url 'login' %}" class="block py-2 px-3 text-white rounded md:border-0 md:p-0 dark:text-white ">Login</a>
+                                <a href="{% url 'login' %}" class="block py-2 px-3 text-white rounded md:border-0 md:p-0 ">Login</a>
                             </li>
                         {% endif %}
                     </ul>
@@ -78,7 +78,7 @@
                 menu.classList.toggle('hidden');
             });
 
-            //Ajax
+        //ajax
             function getCookie(name) {
                 let cookieValue = null;
                 if (document.cookie && document.cookie !== '') {
@@ -94,7 +94,7 @@
                 return cookieValue;
             }
 
-            // Function to handle toggle visit
+        // Function to handle toggle visit
             function toggleVisit(restaurantId) {
                 fetch(`/restaurants/${restaurantId}/toggle-visit/`, {
                     method: 'POST',
@@ -120,7 +120,7 @@
                     .catch(error => console.error('Error:', error));
             }
 
-            // Function to handle toggle bookmark
+        // Function to handle toggle bookmark
             function toggleBookmark(restaurantId) {
                 fetch(`/restaurants/${restaurantId}/toggle-bookmark/`, {
                     method: 'POST',
