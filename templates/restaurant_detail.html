@@ -175,62 +175,6 @@
                 }
             });
         }
-
-    // AJAX functions for bookmark and visit toggles
-        function toggleBookmark(restaurantId) {
-            fetch(`/toggle-bookmark/${restaurantId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({ restaurantId: restaurantId })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const button = document.getElementById(`bookmark-button-${restaurantId}`);
-                    if (data.bookmarked) {
-                        button.textContent = 'Bookmarked';
-                        button.classList.add('bg-blue-800');
-                        button.classList.remove('bg-blue-300');
-                        button.classList.add('text-white');
-                        button.classList.remove('text-gray-800');
-                    } else {
-                        button.textContent = 'Bookmark';
-                        button.classList.add('bg-blue-300');
-                        button.classList.remove('bg-blue-800');
-                        button.classList.add('text-gray-800');
-                        button.classList.remove('text-white');
-                    }
-                });
-        }
-
-        function toggleVisit(restaurantId) {
-            fetch(`/toggle-visit/${restaurantId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({ restaurantId: restaurantId })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const button = document.getElementById(`visit-button-${restaurantId}`);
-                    if (data.visited) {
-                        button.textContent = 'Visited';
-                        button.classList.add('bg-green-800');
-                        button.classList.remove('bg-green-300');
-                        button.classList.add('text-white');
-                        button.classList.remove('text-gray-800');
-                    } else {
-                        button.textContent = 'Mark as Visited';
-                        button.classList.add('bg-green-300');
-                        button.classList.remove('bg-green-800');
-                        button.classList.add('text-gray-800');
-                        button.classList.remove('text-white');
-                    }
-                });
-        }
     </script>
+    
 {% endblock %}
