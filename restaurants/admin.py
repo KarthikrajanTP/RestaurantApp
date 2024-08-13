@@ -19,7 +19,7 @@ class DishAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ('user', 'restaurant', 'rating', 'visited', 'bookmarked')
+    list_display = ('user', 'restaurant', 'rating')
     search_fields = ('user__username', 'restaurant__title')
 
 @admin.register(Cuisine)
