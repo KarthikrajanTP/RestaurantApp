@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from ..models import Cuisine, Restaurant, Photo, Dish, Review
+from ..models import Cuisine, Restaurant, Photo, Dish, Review, BookmarkedRestaurant, VisitedRestaurant
 
 class CuisineModelTests(TestCase):
 
@@ -17,7 +17,6 @@ class RestaurantModelTests(TestCase):
         self.cuisine = Cuisine.objects.create(name='Italian')
         self.restaurant = Restaurant.objects.create(
             title='Test Restaurant',
-            rating=4.5,
             cost_for_two=50.00,
             owner=self.user,
             location='Test Location',
@@ -40,8 +39,6 @@ class RestaurantModelTests(TestCase):
             restaurant=self.restaurant,
             rating=5.0,
             comment='Great place!',
-            visited=True,
-            bookmarked=False
         )
         self.restaurant.update_rating()
         self.assertEqual(self.restaurant.rating, 5.0)
@@ -52,7 +49,6 @@ class PhotoModelTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.restaurant = Restaurant.objects.create(
             title='Test Restaurant',
-            rating=4.5,
             cost_for_two=50.00,
             owner=self.user,
             location='Test Location',
@@ -75,7 +71,6 @@ class DishModelTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.restaurant = Restaurant.objects.create(
             title='Test Restaurant',
-            rating=4.5,
             cost_for_two=50.00,
             owner=self.user,
             location='Test Location',
@@ -99,7 +94,6 @@ class ReviewModelTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.restaurant = Restaurant.objects.create(
             title='Test Restaurant',
-            rating=4.5,
             cost_for_two=50.00,
             owner=self.user,
             location='Test Location',
@@ -112,8 +106,6 @@ class ReviewModelTests(TestCase):
             restaurant=self.restaurant,
             rating=4.0,
             comment='Great food!',
-            visited=True,
-            bookmarked=False
         )
 
     def test_review_str(self):
@@ -126,3 +118,45 @@ class ReviewModelTests(TestCase):
         self.review.delete()
         self.restaurant.update_rating()
         self.assertEqual(self.restaurant.rating, 0.0)
+
+class BookmarkedRestaurantModelTests(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.restaurant = Restaurant.objects.create(
+            title='Test Restaurant',
+            cost_for_two=50.00,
+            owner=self.user,
+            location='Test Location',
+            address='Test Address',
+            timings='10 AM - 10 PM',
+            food_type=Restaurant.VEG,
+        )
+        self.bookmarked_restaurant = BookmarkedRestaurant.objects.create(
+            user=self.user,
+            restaurant=self.restaurant
+        )
+
+    def test_bookmarked_restaurant_str(self):
+        self.assertEqual(str(self.bookmarked_restaurant), f'{self.user.username} - {self.restaurant.title}')
+
+class VisitedRestaurantModelTests(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser', password='testpassword')
+        self.restaurant = Restaurant.objects.create(
+            title='Test Restaurant',
+            cost_for_two=50.00,
+            owner=self.user,
+            location='Test Location',
+            address='Test Address',
+            timings='10 AM - 10 PM',
+            food_type=Restaurant.VEG,
+        )
+        self.visited_restaurant = VisitedRestaurant.objects.create(
+            user=self.user,
+            restaurant=self.restaurant
+        )
+
+    def test_visited_restaurant_str(self):
+        self.assertEqual(str(self.visited_restaurant), f'{self.user.username} - {self.restaurant.title}')

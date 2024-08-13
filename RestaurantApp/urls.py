@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from restaurants.views import RestaurantListView, RestaurantDetailView, DishListView, SpotlightRestaurantsView, VisitedRestaurantView, BookmarkedRestaurantView
+from restaurants.views import RestaurantListView, RestaurantDetailView, DishListView, SpotlightRestaurantsView, VisitedRestaurantView, BookmarkedRestaurantView, ToggleBookmarkView, ToggleVisitView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -28,6 +28,8 @@ urlpatterns = [
     path('bookmarked/',BookmarkedRestaurantView.as_view(), name='bookmarked_restaurants'),
     path('restaurant/<int:pk>/', RestaurantDetailView.as_view(), name='restaurant-detail'),
     path('restaurant/<int:pk>/dishes/', DishListView.as_view(), name='dish-list'),
+    path('restaurants/<int:pk>/toggle-visit/', ToggleVisitView.as_view(), name='toggle-visit'),
+    path('restaurants/<int:pk>/toggle-bookmark/', ToggleBookmarkView.as_view(), name='toggle-bookmark'),
 
     path('admin/', admin.site.urls),
 ]
