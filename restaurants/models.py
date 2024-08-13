@@ -83,21 +83,19 @@ class Review(models.Model):
     def __str__(self):
         return f'{self.user.username} - {self.restaurant.title}'
     
-class Bookmark(models.Model):
+class BookmarkedRestaurant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     restaurant = models.ForeignKey(Restaurant, related_name='bookmarks', on_delete=models.CASCADE)
-    bookmarked = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.user.username} - {self.restaurant.title}'
-    
-class Visit(models.Model):
+
+class VisitedRestaurant(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     restaurant = models.ForeignKey(Restaurant, related_name='visits', on_delete=models.CASCADE)
-    visited = models.BooleanField(default=False)
 
     def __str__(self):
-        return f'{self.user.username} - {self.restaurant.title}'    
+        return f'{self.user.username} - {self.restaurant.title}'
 
 @receiver(post_save, sender=Review)
 @receiver(post_delete, sender=Review)
