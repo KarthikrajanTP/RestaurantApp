@@ -45,6 +45,10 @@ class RestaurantDetailView(LoginRequiredMixin, View):
         bookmarked = BookmarkedRestaurant.objects.filter(user=request.user, restaurant=restaurant).exists()
         visited = VisitedRestaurant.objects.filter(user=request.user, restaurant=restaurant).exists()
 
+        # Adding range for stars
+        star_range = range(1, 6)
+        user_rating = user_review.rating if user_review else 0
+
         return render(request, 'restaurant_detail.html', {
             'restaurant': restaurant,
             'page_obj': page_obj,
@@ -52,6 +56,8 @@ class RestaurantDetailView(LoginRequiredMixin, View):
             'user_review': user_review,
             'bookmarked': bookmarked,
             'visited': visited,
+            'star_range': star_range,
+            'user_rating': user_rating,
         })
 
     def post(self, request, pk, *args, **kwargs):
@@ -82,6 +88,8 @@ class RestaurantDetailView(LoginRequiredMixin, View):
             'user_review': user_review,
             'bookmarked': bookmarked,
             'visited': visited,
+            'star_range': range(1, 6),
+            'user_rating': form.cleaned_data.get('rating', 0),
         })
 
     def _is_update_review_form(self, user_review=None, data=None):
@@ -89,6 +97,7 @@ class RestaurantDetailView(LoginRequiredMixin, View):
             return ReviewForm(data, instance=user_review)
         else:
             return ReviewForm(data)
+
 
 class DishListView(ListView):
     model = Dish
