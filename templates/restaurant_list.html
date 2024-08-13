@@ -60,23 +60,17 @@
                 </select>
             </div>
 
+            <div class="mb-4">
+                <label for="city" class="block text-lg">Search by City:</label>
+                <input type="text" id="city" name="city" value="{{ request.GET.city }}" class="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" placeholder="Enter city">
+            </div>
+
             <div class="flex items-end mb-4">
-                <button type="submit" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700">Filter</button>
+                <button type="submit" class="py-2 px-4 bg-blue-500 text-white rounded hover:bg-blue-700">Apply Filters</button>
             </div>
-        </form>
-
-
-        <form method="get" action="" class="mb-4 flex flex-wrap gap-4">
-            <div>
-                <label for="city" class="block text-sm font-medium text-gray-700">Search by City:</label>
-                <input type="text" id="city" name="city" value="{{ request.GET.city }}" class="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" placeholder="Enter city">
-            </div>
-            <button type="submit" class="self-end mb-6 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700">Search</button>
         </form>
 
     </div>
-
-
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
@@ -110,8 +104,8 @@
             <div class="pagination">
                 <span class="step-links">
                     {% if page_obj.has_previous %}
-                        <a href="?{% if request.GET.cuisine %}cuisine={{ request.GET.cuisine }}&{% endif %}{% if request.GET.food_type %}food_type={{ request.GET.food_type }}&{% endif %}{% if request.GET.rating %}rating={{ request.GET.rating }}&{% endif %}{% if request.GET.cost %}cost={{ request.GET.cost }}&{% endif %}{% if request.GET.sort_by %}sort_by={{ request.GET.sort_by }}&{% endif %}page=1">&laquo; first</a>
-                        <a href="?{% if request.GET.cuisine %}cuisine={{ request.GET.cuisine }}&{% endif %}{% if request.GET.food_type %}food_type={{ request.GET.food_type }}&{% endif %}{% if request.GET.rating %}rating={{ request.GET.rating }}&{% endif %}{% if request.GET.cost %}cost={{ request.GET.cost }}&{% endif %}{% if request.GET.sort_by %}sort_by={{ request.GET.sort_by }}&{% endif %}page={{ page_obj.previous_page_number }}">&lsaquo; previous</a>
+                        <a href="?{% if request.GET.cuisines %}cuisines={{ request.GET.cuisines }}&{% endif %}{% if request.GET.food_type %}food_type={{ request.GET.food_type }}&{% endif %}{% if request.GET.rating %}rating={{ request.GET.rating }}&{% endif %}{% if request.GET.cost %}cost={{ request.GET.cost }}&{% endif %}{% if request.GET.o %}o={{ request.GET.o }}&{% endif %}page=1">&laquo; first</a>
+                        <a href="?{% if request.GET.cuisines %}cuisines={{ request.GET.cuisines }}&{% endif %}{% if request.GET.food_type %}food_type={{ request.GET.food_type }}&{% endif %}{% if request.GET.rating %}rating={{ request.GET.rating }}&{% endif %}{% if request.GET.cost %}cost={{ request.GET.cost }}&{% endif %}{% if request.GET.o %}o={{ request.GET.o }}&{% endif %}page={{ page_obj.previous_page_number }}">&lsaquo; previous</a>
                     {% endif %}
 
                     <span class="current">
@@ -119,12 +113,11 @@
                     </span>
 
                     {% if page_obj.has_next %}
-                        <a href="?{% if request.GET.cuisine %}cuisine={{ request.GET.cuisine }}&{% endif %}{% if request.GET.food_type %}food_type={{ request.GET.food_type }}&{% endif %}{% if request.GET.rating %}rating={{ request.GET.rating }}&{% endif %}{% if request.GET.cost %}cost={{ request.GET.cost }}&{% endif %}{% if request.GET.sort_by %}sort_by={{ request.GET.sort_by }}&{% endif %}page={{ page_obj.next_page_number }}">next &rsaquo;</a>
-                        <a href="?{% if request.GET.cuisine %}cuisine={{ request.GET.cuisine }}&{% endif %}{% if request.GET.food_type %}food_type={{ request.GET.food_type }}&{% endif %}{% if request.GET.rating %}rating={{ request.GET.rating }}&{% endif %}{% if request.GET.cost %}cost={{ request.GET.cost }}&{% endif %}{% if request.GET.sort_by %}sort_by={{ request.GET.sort_by }}&{% endif %}page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                        <a href="?{% if request.GET.cuisines %}cuisines={{ request.GET.cuisines }}&{% endif %}{% if request.GET.food_type %}food_type={{ request.GET.food_type }}&{% endif %}{% if request.GET.rating %}rating={{ request.GET.rating }}&{% endif %}{% if request.GET.cost %}cost={{ request.GET.cost }}&{% endif %}{% if request.GET.o %}o={{ request.GET.o }}&{% endif %}page={{ page_obj.next_page_number }}">next &rsaquo;</a>
+                        <a href="?{% if request.GET.cuisines %}cuisines={{ request.GET.cuisines }}&{% endif %}{% if request.GET.food_type %}food_type={{ request.GET.food_type }}&{% endif %}{% if request.GET.rating %}rating={{ request.GET.rating }}&{% endif %}{% if request.GET.cost %}cost={{ request.GET.cost }}&{% endif %}{% if request.GET.o %}o={{ request.GET.o }}&{% endif %}page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
                     {% endif %}
                 </span>
             </div>
         {% endif %}
-
     </div>
 {% endblock %}
