@@ -1,8 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
-from restaurants.models import Restaurant, Cuisine, Review, Dish
-from restaurants.forms import ReviewForm
+from restaurants.models import Restaurant, Cuisine, Review, Dish, BookmarkedRestaurant, VisitedRestaurant
 
 class RestaurantListViewTests(TestCase):
     def setUp(self):
@@ -49,10 +48,10 @@ class RestaurantDetailViewTests(TestCase):
             user=self.user,
             restaurant=self.restaurant,
             rating=4.0,
-            comment='Great food!',
-            visited=True,
-            bookmarked=False
+            comment='Great food!'
         )
+        self.bookmarked_restaurant = BookmarkedRestaurant.objects.create(user=self.user, restaurant=self.restaurant)
+        self.visited_restaurant = VisitedRestaurant.objects.create(user=self.user, restaurant=self.restaurant)
         self.url = reverse('restaurant-detail', kwargs={'pk': self.restaurant.pk})
 
     def test_get_restaurant_detail_view(self):
@@ -60,16 +59,16 @@ class RestaurantDetailViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'restaurant_detail.html')
         self.assertContains(response, 'Great food!')
+        self.assertTrue(response.context['bookmarked'])
+        self.assertTrue(response.context['visited'])
 
     def test_post_restaurant_detail_view(self):
-        form_data = {'rating': 5.0, 'comment': 'Excellent!', 'visited': 'on', 'bookmarked': 'on'}
+        form_data = {'rating': 5.0, 'comment': 'Excellent!'}
         response = self.client.post(self.url, data=form_data)
         self.assertRedirects(response, self.url)
         updated_review = Review.objects.get(user=self.user, restaurant=self.restaurant)
         self.assertEqual(updated_review.rating, 5.0)
         self.assertEqual(updated_review.comment, 'Excellent!')
-        self.assertTrue(updated_review.visited)
-        self.assertTrue(updated_review.bookmarked)
 
 class DishListViewTests(TestCase):
     def setUp(self):
@@ -139,14 +138,7 @@ class VisitedRestaurantViewTests(TestCase):
             timings='10 AM - 10 PM',
             food_type=Restaurant.VEG
         )
-        self.review = Review.objects.create(
-            user=self.user,
-            restaurant=self.restaurant,
-            rating=4.0,
-            comment='Great food!',
-            visited=True,
-            bookmarked=False
-        )
+        self.visited_restaurant = VisitedRestaurant.objects.create(user=self.user, restaurant=self.restaurant)
         self.url = reverse('visited_restaurants')
 
     def test_visited_restaurant_view(self):
@@ -170,14 +162,7 @@ class BookmarkedRestaurantViewTests(TestCase):
             timings='10 AM - 10 PM',
             food_type=Restaurant.VEG
         )
-        self.review = Review.objects.create(
-            user=self.user,
-            restaurant=self.restaurant,
-            rating=4.0,
-            comment='Great food!',
-            visited=False,
-            bookmarked=True
-        )
+        self.bookmarked_restaurant = BookmarkedRestaurant.objects.create(user=self.user, restaurant=self.restaurant)
         self.url = reverse('bookmarked_restaurants')
 
     def test_bookmarked_restaurant_view(self):

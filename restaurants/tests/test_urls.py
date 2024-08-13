@@ -2,7 +2,8 @@ from django.test import TestCase
 from django.urls import reverse, resolve
 from restaurants.views import (
     RestaurantListView, RestaurantDetailView, DishListView,
-    SpotlightRestaurantsView, VisitedRestaurantView, BookmarkedRestaurantView
+    SpotlightRestaurantsView, VisitedRestaurantView, BookmarkedRestaurantView,
+    ToggleBookmarkView, ToggleVisitView
 )
 from django.contrib.auth import get_user_model
 
@@ -36,6 +37,14 @@ class URLTests(TestCase):
     def test_dish_list_url_resolves(self):
         url = reverse('dish-list', args=[self.restaurant_id])
         self.assertEqual(resolve(url).func.view_class, DishListView)
+
+    def test_toggle_visit_url_resolves(self):
+        url = reverse('toggle-visit', args=[self.restaurant_id])
+        self.assertEqual(resolve(url).func.view_class, ToggleVisitView)
+
+    def test_toggle_bookmark_url_resolves(self):
+        url = reverse('toggle-bookmark', args=[self.restaurant_id])
+        self.assertEqual(resolve(url).func.view_class, ToggleBookmarkView)
 
     def test_admin_url_resolves(self):
         url = reverse('admin:index')

@@ -122,7 +122,7 @@ class VisitedRestaurantView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return Restaurant.objects.filter(visits__user=user).distinct()
+        return Restaurant.objects.filter(visits__user=user)
     
 class BookmarkedRestaurantView(ListView):
     model = Restaurant
@@ -132,8 +132,7 @@ class BookmarkedRestaurantView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        return Restaurant.objects.filter(bookmarks__user=user).distinct()
-
+        return Restaurant.objects.filter(bookmarks__user=user)
 
 class ToggleVisitView(View):
     def post(self, request, *args, **kwargs):
