@@ -16,7 +16,7 @@
                 <h2 class="text-2xl font-bold mb-6 text-gray-800">Login</h2>
                 <form method="post" class="space-y-4">
                     {% csrf_token %}
-                    
+
                     <div class="form-group">
                         <label for="{{ form.username.id_for_label }}" class="block text-gray-700 font-medium">{{ form.username.label }}</label>
                         {% render_field form.username class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %}

@@ -4,7 +4,7 @@
 {% load widget_tweaks %}
 
 {% block content %}
-    <div class="container mx-auto mt-4 px-4">
+    <div id="content-container" class="container mx-auto mt-4 px-4">
         <div class="flex flex-wrap -mx-4">
         <!-- Carousel on the Left -->
             <div class="w-1/2 px-4 mb-4 md:mb-0">
@@ -69,7 +69,7 @@
                         <button id="visit-button-{{ restaurant.id }}" onclick="toggleVisit({{ restaurant.id }})"
                                 class="px-4 py-2 w-36 font-semibold rounded-md transition-colors duration-300 ease-in-out
                                        {{ visited|yesno:'bg-green-800, bg-green-300' }} {{ visited|yesno:'text-white, text-gray-800' }}
-                                       hover:opacity-80">
+                                       hover:opacity-95">
                             {% if visited %}
                                 Visited
                             {% else %}
@@ -83,7 +83,7 @@
                         <button id="bookmark-button-{{ restaurant.id }}" onclick="toggleBookmark({{ restaurant.id }})"
                                 class="px-4 py-2 w-36 font-semibold rounded-md transition-colors duration-300 ease-in-out
                                        {{ bookmarked|yesno:'bg-blue-800, bg-blue-300' }} {{ bookmarked|yesno:'text-white, text-gray-800' }}
-                                       hover:opacity-80">
+                                       hover:opacity-95">
                             {% if bookmarked %}
                                 Bookmarked
                             {% else %}
@@ -95,73 +95,125 @@
             </div>
         </div>
 
-        <!-- Rating and Review Section -->
-        <div class="mt-8">
-            <h3 class="text-2xl font-semibold mb-4">Rate and Review</h3>
-            <form method="post" class="space-y-4">
-                {% csrf_token %}
-                {{ review_form.non_field_errors }}
-                <div>
-                    <div class="flex space-x-1 mb-4">
-                        {% for i in star_range %}
-                            <svg
-                                class="w-8 h-8 cursor-pointer star {% if i <= user_rating %}text-yellow-300{% else %}text-gray-300{% endif %} hover:text-yellow-300"
-                                data-value="{{ i }}"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="0 0 22 20"
-                                onclick="updateRating({{ i }})">
-                                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
-                            </svg>
-                        {% endfor %}
-                    </div>
-                    <input type="hidden" name="rating" id="ratingInput" value="{{ user_rating }}">
-                    {{ review_form.rating.errors }}
-                </div>
-                <div>
-                    {% render_field review_form.comment class+="block w-full mt-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %}
-                    <span class="text-red-600 text-md font-semibold">{{ review_form.comment.errors }}</span>
-                </div>
-                <button type="submit" class="mt-4 px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600">{{ user_review|yesno:"Edit Review,Add Review" }}</button>
-            </form>
-        </div>
 
-    <!-- Existing Reviews -->
-        <div class="mt-8">
-            <h3 class="text-2xl font-semibold mb-4">Reviews</h3>
-            {% for review in page_obj.object_list %}
-                <div class="bg-white shadow-lg rounded-lg p-4 mb-4">
-                    <div class="flex items-center mb-2">
-                        <h5 class="text-lg font-bold mr-2">{{ review.user.username }}</h5>
-                        <h6 class="text-gray-600">Rating: {{ review.rating }}</h6>
-                    </div>
-                    <p>{{ review.comment }}</p>
-                    <p class="text-sm text-gray-500">{{ review.created_at }}</p>
-                </div>
-            {% empty %}
-                <p>No reviews yet.</p>
-            {% endfor %}
-        </div>
 
-    <!-- Pagination -->
-        <div class="mt-4">
-            <div class="flex justify-between">
-                <div>
-                    {% if page_obj.has_previous %}
-                        <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Previous</a>
-                    {% endif %}
-                </div>
-                <div>
-                    {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Next</a>
-                    {% endif %}
-                </div>
+        <!-- Review Modal -->
+        <div id="review-modal" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg w-1/3">
+                <h3 class="text-2xl font-semibold mb-4" id="modal-title">Add Review</h3>
+                <form method="post" id="review-form">
+                    {% csrf_token %}
+                    {{ review_form.non_field_errors }}
+                    <div class="mb-4">
+                        <div class="flex space-x-1 mb-4">
+                            {% for i in star_range %}
+                                <svg
+                                    class="w-8 h-8 cursor-pointer star {% if i <= user_rating %}text-yellow-300{% else %}text-gray-300{% endif %} hover:text-yellow-300"
+                                    data-value="{{ i }}"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    viewBox="0 0 22 20"
+                                    onclick="updateRating({{ i }})">
+                                    <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                                </svg>
+                            {% endfor %}
+                        </div>
+                        <input type="hidden" name="rating" id="ratingInput" value="{{ user_rating }}">
+                        {{ review_form.rating.errors }}
+                    </div>
+                    <div class="mb-4">
+                        {% render_field review_form.comment class+="block w-full mt-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %}
+                        <span class="text-red-600 text-md font-semibold">{{ review_form.comment.errors }}</span>
+                    </div>
+                    <input type="hidden" name="review_id" id="reviewIdInput" value="">
+                    <button type="submit" class="mt-4 px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600" id="submit-button">Submit</button>
+                    <button type="button" class="mt-4 px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600" onclick="closeReviewModal()">Cancel</button>
+                </form>
             </div>
         </div>
     </div>
 
+    <!-- Display Current User's Review -->
+    <div class="mt-8">
+        <h3 class="text-2xl font-semibold mb-4">Your Review</h3>
+        {% if user_review %}
+            <div class="bg-white shadow-lg rounded-lg p-4 mb-4">
+                <div class="flex items-center mb-2">
+                    <h5 class="text-lg font-bold mr-2">{{ user_review.user.username }}</h5>
+                    <h6 class="text-gray-600">Rating: {{ user_review.rating }}</h6>
+                </div>
+                <p>{{ user_review.comment }}</p>
+                <p class="text-sm text-gray-500">{{ user_review.created_at }}</p>
+            </div>
+        {% else %}
+            <p>You have not written a review yet.</p>
+        {% endif %}
+        <div class="mt-5">
+            {% if user_review %}
+                <button onclick="openReviewModal({{ user_review.id }})" class="px-4 py-2 w-36 font-semibold rounded-md bg-blue-500 text-white hover:bg-blue-600">
+                    Edit Review
+                </button>
+            {% else %}
+                <button onclick="openReviewModal()" class="px-4 py-2 w-36 font-semibold rounded-md bg-green-500 text-white hover:bg-green-600">
+                    Add Review
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Existing Reviews -->
+    <div class="mt-8">
+        <h3 class="text-2xl font-semibold mb-4">Reviews</h3>
+        {% for review in page_obj.object_list %}
+            <div class="bg-white shadow-lg rounded-lg p-4 mb-4">
+                <div class="flex items-center mb-2">
+                    <h5 class="text-lg font-bold mr-2">{{ review.user.username }}</h5>
+                    <h6 class="text-gray-600">Rating: {{ review.rating }}</h6>
+                </div>
+                <p>{{ review.comment }}</p>
+                <p class="text-sm text-gray-500">{{ review.created_at }}</p>
+            </div>
+        {% empty %}
+            <p>No reviews yet.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-4">
+        <div class="flex justify-between">
+            <div>
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Previous</a>
+                {% endif %}
+            </div>
+            <div>
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Next</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    </div>
+
     <script>
+
+        function openReviewModal(reviewId = null) {
+            document.getElementById('review-modal').classList.remove('hidden');
+            if (reviewId) {
+                document.getElementById('reviewIdInput').value = reviewId;
+                document.getElementById('modal-title').textContent = 'Edit Review';
+            } else {
+                document.getElementById('reviewIdInput').value = '';
+                document.getElementById('modal-title').textContent = 'Add Review';
+            }
+        }
+
+        function closeReviewModal() {
+            document.getElementById('review-modal').classList.add('hidden');
+        }
+
+
         function updateRating(value) {
             document.getElementById('ratingInput').value = value;
             const stars = document.querySelectorAll('.star');
@@ -176,5 +228,5 @@
             });
         }
     </script>
-    
+
 {% endblock %}
