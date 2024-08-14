@@ -6,5 +6,5 @@ register = template.Library()
 def is_filtered(query_dict):
     return any(
         value.strip() for key, value in query_dict.items()
-        if key != 'page' and value.strip()
+        if key != 'page'
     )
